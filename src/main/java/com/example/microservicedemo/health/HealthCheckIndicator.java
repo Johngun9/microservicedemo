@@ -1,4 +1,4 @@
-package com.example.microservicedemo;
+package com.example.microservicedemo.health;
 
 import java.util.List;
 

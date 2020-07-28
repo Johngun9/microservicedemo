@@ -16,7 +16,7 @@ public class Home {
 
     @GetMapping("/home")
     public String getHomeGreeting(){
-        return "Hi this is testing of sample controller";
+        return "Greeting from controller";
     }
 
     @GetMapping("/student/{id}")
