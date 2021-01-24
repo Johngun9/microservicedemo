@@ -14,8 +14,7 @@ public class StudentService {
     StudentRespository studentRespository;
 
     public Optional<Student> getStudent(Long id){
-        Optional<Student> st =  studentRespository.findById(id);
-        return st;
+        return studentRespository.findById(id);
     }
 
     public Student save(Student student) {

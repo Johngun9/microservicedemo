@@ -14,73 +14,74 @@ import org.springframework.util.Assert;
 
 public class HealthCheckIndicator implements HealthIndicator {
 
-	   private final JdbcTemplate jdbcTemplate;
+	private static final int GOOD_HEALTH_CODE = 1;
 
-	    private final String healthQuery;
+	private static final int BAD_HEALTH_CODE = 0;
 
-	    private static final int GOOD_HEALTH_CODE = 1;
+	private static final Logger LOGGER = LoggerFactory.getLogger(HealthCheckIndicator.class);
 
-	    private static final int BAD_HEALTH_CODE = 0;
+	private final JdbcTemplate jdbcTemplate;
 
-	    private static final Logger LOGGER = LoggerFactory.getLogger(HealthCheckIndicator.class);
+	private final String healthQuery;
 
-	    public HealthCheckIndicator(final JdbcTemplate jdbcTemplate,
-	                                  @Value("${health.query}") final String healthQuery) {
 
-	        Assert.notNull(jdbcTemplate, "The JDBC template may not be null.");
-	        Assert.notNull(healthQuery, "The health query may not be null.");
+	public HealthCheckIndicator(final JdbcTemplate jdbcTemplate,
+								@Value("${health.query}") final String healthQuery) {
 
-	        this.jdbcTemplate = jdbcTemplate;
-	        this.healthQuery = healthQuery;
-	    }
+		Assert.notNull(jdbcTemplate, "The JDBC template may not be null.");
+		Assert.notNull(healthQuery, "The health query may not be null.");
 
-	    /**
-	     * Returns an indication of application health
-	     *
-	     * @return The health for 
-	     */
-	    @Override
-	    public Health health() {
+		this.jdbcTemplate = jdbcTemplate;
+		this.healthQuery = healthQuery;
+	}
 
-	        final int healthCode = check();
+	/**
+	 * Returns an indication of application health
+	 *
+	 * @return The health for
+	 */
+	@Override
+	public Health health() {
 
-	        if (isHealthBad(healthCode)) {
+		final int healthCode = check();
 
-	            return Health.down().withDetail("Unable to connect to the database.", 500).build();
+		if (isHealthBad(healthCode)) {
 
-	        }
+			return Health.down().withDetail("Unable to connect to the database.", 500).build();
 
-	        return Health.up().build();
+		}
 
-	    }
+		return Health.up().build();
 
-	    private boolean isHealthBad(final int healthCode) {
+	}
 
-	        return healthCode != GOOD_HEALTH_CODE;
+	private boolean isHealthBad(final int healthCode) {
 
-	    }
+		return healthCode != GOOD_HEALTH_CODE;
 
-	    /**
-	     * Runs a test query against the database to check connectivity.
-	     *
-	     * @return The number of results returned from the test query. Should always be one result.
-	     */
-	    private int check() {
+	}
 
-	        List<Object> results;
+	/**
+	 * Runs a test query against the database to check connectivity.
+	 *
+	 * @return The number of results returned from the test query. Should always be one result.
+	 */
+	private int check() {
 
-	        try {
-	            results = jdbcTemplate.query(healthQuery,
-	                    new SingleColumnRowMapper<>());
-	        } catch (DataAccessException ex) {
+		List<Object> results;
 
-	            LOGGER.error("Exception occurred when trying to check health.", ex);
+		try {
+			results = jdbcTemplate.query(healthQuery,
+					new SingleColumnRowMapper<>());
+		} catch (DataAccessException ex) {
 
-	            return BAD_HEALTH_CODE;
+			LOGGER.error("Exception occurred when trying to check health.", ex);
 
-	        }
+			return BAD_HEALTH_CODE;
 
-	        return results.size();
+		}
 
-	    }
+		return results.size();
+
+	}
 }
