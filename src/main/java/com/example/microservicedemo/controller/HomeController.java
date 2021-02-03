@@ -22,9 +22,9 @@ public class HomeController {
         this.studentService = studentService;
     }
 
-    @GetMapping("/home")
-    public String getHomeGreeting(){
-        return "Hi, Welcome to Microservices Architechure";
+    @GetMapping("/greeting/{name}")
+    public String getHomeGreeting(@PathVariable String name){
+        return "Hi "+ name +", Welcome to Microservices Architechure";
     }
 
     @GetMapping("/student/{id}")
