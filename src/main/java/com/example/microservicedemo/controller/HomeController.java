@@ -24,7 +24,7 @@ public class HomeController {
 
     @GetMapping("/home")
     public String getHomeGreeting(){
-        return "Hi, Welcome to Microservice Architechure";
+        return "Hi, Welcome to Microservices Architechure";
     }
 
     @GetMapping("/student/{id}")
